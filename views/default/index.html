@@ -1,0 +1,114 @@
+{{extend 'layout.html'}}
+{{block head}}
+    <link href='{{=URL("static", "css/jquery.dm-uploader.min.css")}}' rel="stylesheet">
+{{end}}
+{{block page_js}}
+    <script src='{{=URL("static", "js/jquery.dm-uploader.min.js")}}'></script>
+    <script src='{{=URL("static", "js/demo-ui.js")}}'></script>
+    <script src='{{=URL("static", "js/demo-config.js")}}'></script>
+    
+    <!-- File item template -->
+    <script type="text/html" id="files-template">
+      <li class="media">
+        <div class="media-body mb-1">
+          <p class="mb-2">
+            <strong>%%filename%%</strong> - Status: <span class="text-muted">Waiting</span>
+          </p>
+          <div class="progress mb-2">
+            <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" 
+              role="progressbar"
+              style="width: 0%" 
+              aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            </div>
+          </div>
+          <hr class="mt-1 mb-1" />
+        </div>
+      </li>
+    </script>
+
+
+
+    <!-- Debug item template -->
+    <script type="text/html" id="debug-template">
+      <li class="list-group-item text-%%color%%"><strong>%%date%%</strong>: %%message%%</li>
+    </script>
+{{end}}
+<div class="container-fluid">
+  <div class="card h-100" style="border-color:#5d9269;b_order-radius:15px;">
+    <div class="card-header" style="background-color:#b8daff;;b_order-radius:15px;">
+      Cargue de archivos.
+    </div>
+    <br>
+    <div class="card-boby">
+      <div class="row">
+        <div class="col-md-12 container">
+          <form class="container-fluid">
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="exampleFormControlSelect2">Seleccione un cliente</label>
+                <select class="form-control" id="idClientes">
+                  <option>Seleccione un cliente</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="exampleFormControlSelect2">Seleccione un segmento</label>
+                <select class="form-control" disabled="" id="idSegmentos">
+                  <option>Seleccione un cliente</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="exampleFormControlSelect2">Seleccione una asignación</label>
+                <select class="form-control" disabled="" id="idAsignaciones">
+                  <option>Seleccione un cliente</option>
+                </select>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="card-footer">
+      
+
+      <div class="form-group row">
+        <div class="col-md-5"></div>
+        <div class="col-md-5"></div>
+        <div class="col-md-2">
+          <button  class="btn btn-primary btn-block rigth">Siguiente
+              <i class="fa fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid" style="display: none;">
+  <hr><br>
+  <div class="row">
+    <div class="col-md-3 col-sm-12">
+      
+      <!-- Our markup, the important part here! -->
+      <div id="drag-and-drop-zoneMacro" class="dm-uploader p-5">
+        <!-- <h3 class="mb-5 mt-5 text-muted">Click en el icono para subir el archivo de la <b>MACRO</b>.</h3><br> -->
+        <div class="btn btn-primary btn-block mb-5">
+            <span>Click aquí para subir el archivo</span>
+            <input type="file" title='Click to add Files'  />
+        </div>
+      </div><!-- /uploader -->
+    </div>
+    <div class="col-md-9 col-sm-12">
+      <div class="card h-100" style="border-color:#5d9269;border-radius:15px;">
+        <div class="card-header" style="background-color:#b8daff;;border-radius:15px;">
+          Listado de archivos
+        </div>
+        <div class="card-boby">
+          <ul class="list-unstyled p-2 d-flex flex-column col" id="files">
+            <li class="text-muted text-center empty">No files uploaded.</li>
+          </ul>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
