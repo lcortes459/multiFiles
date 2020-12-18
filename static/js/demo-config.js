@@ -5,9 +5,14 @@ $(function(){
    * 
    * UI functions ui_* can be located in: demo-ui.js
    */
+  var destino = $('#destino').val();
+  //console.log('idClienSegAsi', idClienSegAsi);
   $('#drag-and-drop-zoneBi').dmUploader({ //
-    url: '/multiFlies/default/upload_file',
-    maxFileSize: 3000000, // 3 Megs 
+    url: '/InteliBpoFilesII/default/upload_file',
+    maxFileSize: 2000000000, // 3 Megs 
+    extraData: {
+       "destino": destino
+    },
     onDragEnter: function(){
       // Happens when dragging something over the DnD area
       this.addClass('active');
@@ -26,8 +31,8 @@ $(function(){
     },
     onNewFile: function(id, file){
       // When a new file is added using the file selector or the DnD area
-      console.log('idBi', id);
-      console.log('fileBi', file);
+      //console.log('idBi', id);
+      //console.log('fileBi', file);
       ui_add_log('New file added #' + id);
       ui_multi_add_file(id, file);
     },
@@ -58,7 +63,7 @@ $(function(){
       ui_multi_update_file_progress(id, 0, 'danger', false);  
     },
     onFallbackMode: function(){
-      // When the browser doesn't support this plugin :(
+      // When the browser doesn't support this plugin :( 4658
       ui_add_log('Plugin cant be used here, running Fallback callback', 'danger');
     },
     onFileSizeError: function(file){
@@ -69,8 +74,11 @@ $(function(){
 
   $('#drag-and-drop-zoneMacro').dmUploader({ //
     
-    url: '/multiFlies/default/upload_file',
-    maxFileSize: 3000000, // 3 Megs 
+    url: '/InteliBpoFilesII/default/upload_fileMacro',
+    maxFileSize: 2000000000, // 3 Megs 
+    extraData: {
+       "destino": destino
+    },
     onDragEnter: function(){
       // Happens when dragging something over the DnD area
       this.addClass('active');
