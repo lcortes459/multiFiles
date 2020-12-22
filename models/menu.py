@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 # this file is released under public domain and you can use without limitations
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -108,3 +108,71 @@ response.menu = [
 #         ]),
 #     ]
 
+# -*- coding: utf-8 -*-
+import math,sys,os,re,subprocess
+import os.path, json,shlex
+from sqlalchemy import create_engine
+
+
+
+#resul = {'empresa': 'falabella', 'idasignacion': 21, 'idsegmento': '5', 'nueva_asig': True, 'segmento': 'Preventiva_Peru', 'nombre': ['Asignacion_PREV_REF_BOT_2TEST.xlsx'], 'idcliente': '3', 'fecha_actual': '20201113115517', 'cliente': 'Falabella_Peru'}
+
+
+# print('resul',json.dumps(resul))
+# # args = shlex.split(""" python3.6 /opt/intelbpo/automaticos/avi_falabella/macro/src/main.py {} """.format(json.dumps(resul)))
+
+# # print(args)
+
+
+# # p = subprocess.Popen(args) # Success!
+
+
+# # print('p', p)
+
+def runMacro( dataMacro ):
+	resulMacro = ''
+	print('aca es la macro')
+	with open('out.txt', 'w+') as fout:
+	    with open('err.txt', 'w+') as ferr:
+	        out = subprocess.call(['python3.6', '/opt/intelbpo/automaticos/avi_falabella/macro/src/main.py', """{}""".format(
+	            json.dumps(dataMacro))], stdout=fout, stderr=ferr)
+	        # reset file to read from it
+	        fout.seek(0)
+	        # save output (if any) in variable
+	        output = fout.read()
+
+	        # reset file to read from it
+	        ferr.seek(0)
+	        # save errors (if any) in variable
+	        errors = ferr.read()
+	        resulMacro = out
+	        print('output',output)
+	        print('errors',errors)
+	        print('resulMacro',resulMacro)
+
+	print('resul', out)
+	return resulMacro
+
+
+
+
+
+
+def insertResulProces( idcliente,resultaMejorGestion,archivoDescarga, variables, mensaje ):
+
+
+    resul = db.verificacionProcesos.insert(
+        idEmpresa           = 1,
+        empresa             = 'falabella',
+        idCliente           = idcliente,
+        cliente             = variables.clienteNombre,
+        idSegmento          = variables.clienteSegmento,
+        segmento            = variables.segmentoNombre,
+        idAsignacion        = variables.asignacionFile,
+        asignacion          = variables.asignacionFile,
+        nombreEjecucion     = variables.opc,
+        resultadoEjecucion  = resultaMejorGestion,
+        upload_file         = archivoDescarga,
+        mensaje             = mensaje
+    )
+    return resul

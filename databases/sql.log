@@ -59,3 +59,178 @@ CREATE TABLE "upload"(
     "upload_file" CHAR(512)
 );
 success!
+timestamp: 2020-11-06T16:29:38.203369
+CREATE TABLE `auth_user`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `first_name` VARCHAR(128),
+    `last_name` VARCHAR(128),
+    `email` VARCHAR(512),
+    `password` VARCHAR(512),
+    `registration_key` VARCHAR(512),
+    `reset_password_key` VARCHAR(512),
+    `registration_id` VARCHAR(512),
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2020-11-06T16:29:38.349581
+CREATE TABLE `auth_group`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `role` VARCHAR(512),
+    `description` LONGTEXT,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2020-11-06T16:29:38.366282
+CREATE TABLE `auth_membership`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `user_id` INT  , INDEX `user_id__idx` (`user_id`), FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`) ON DELETE CASCADE,
+    `group_id` INT  , INDEX `group_id__idx` (`group_id`), FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`) ON DELETE CASCADE,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2020-11-06T16:29:38.382394
+CREATE TABLE `auth_permission`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `group_id` INT  , INDEX `group_id__idx` (`group_id`), FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`) ON DELETE CASCADE,
+    `name` VARCHAR(512),
+    `table_name` VARCHAR(512),
+    `record_id` INTEGER,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2020-11-06T16:29:38.434051
+CREATE TABLE `auth_event`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `time_stamp` DATETIME,
+    `client_ip` VARCHAR(512),
+    `user_id` INT  , INDEX `user_id__idx` (`user_id`), FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`) ON DELETE CASCADE,
+    `origin` VARCHAR(512),
+    `description` LONGTEXT,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2020-11-06T16:29:38.449450
+CREATE TABLE `auth_cas`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `user_id` INT  , INDEX `user_id__idx` (`user_id`), FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`) ON DELETE CASCADE,
+    `created_on` DATETIME,
+    `service` VARCHAR(512),
+    `ticket` VARCHAR(512),
+    `renew` CHAR(1),
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2020-11-06T16:29:38.469770
+CREATE TABLE `upload`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `empresa` VARCHAR(512),
+    `cliente` VARCHAR(512),
+    `segmento` VARCHAR(512),
+    `asignacion` VARCHAR(512),
+    `upload_file` VARCHAR(512),
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2020-11-06T16:29:38.484818
+CREATE TABLE `tmpEmpClieSegAsignacion`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `idEmpresa` VARCHAR(512),
+    `empresa` VARCHAR(512),
+    `idCliente` VARCHAR(512),
+    `cliente` VARCHAR(512),
+    `idSegmento` VARCHAR(512),
+    `segmento` VARCHAR(512),
+    `idAsignacion` VARCHAR(512),
+    `asignacion` VARCHAR(512),
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2020-11-09T01:59:19.219828
+ALTER TABLE `upload` ADD `idSegmento` VARCHAR(512);
+success!
+timestamp: 2020-11-09T01:59:19.392476
+ALTER TABLE `upload` ADD `idEmpresa` VARCHAR(512);
+success!
+timestamp: 2020-11-09T01:59:19.465171
+ALTER TABLE `upload` ADD `idAsignacion` VARCHAR(512);
+success!
+timestamp: 2020-11-09T01:59:19.518287
+ALTER TABLE `upload` ADD `idCliente` VARCHAR(512);
+success!
+success!
+timestamp: 2020-11-09T02:05:01.189225
+ALTER TABLE `upload` ADD `fechaCreacion` VARCHAR(512);
+success!
+timestamp: 2020-11-09T02:05:01.263081
+ALTER TABLE `upload` ADD `nombrefilescarpeta` VARCHAR(512);
+success!
+success!
+timestamp: 2020-11-09T02:11:11.759038
+ALTER TABLE `upload` ADD `nombreOriginal` VARCHAR(512);
+success!
+success!
+timestamp: 2020-11-09T02:44:01.734065
+ALTER TABLE `upload` ADD `idTablaTmp` VARCHAR(512);
+success!
+timestamp: 2020-11-09T02:44:01.836088
+ALTER TABLE `upload` DROP COLUMN `nombreOriginal`;
+success!
+timestamp: 2020-11-09T02:50:13.569059
+ALTER TABLE `upload` ADD `nombreOriginal` VARCHAR(512);
+success!
+success!
+timestamp: 2020-11-12T11:42:00.756070
+ALTER TABLE `upload` ADD `estadoCargue` VARCHAR(512);
+success!
+success!
+timestamp: 2020-11-12T11:44:31.665576
+ALTER TABLE `tmpEmpClieSegAsignacion` ADD `estadoCargue` VARCHAR(512);
+success!
+success!
+timestamp: 2020-11-17T14:03:34.802056
+CREATE TABLE `verificacionProcesos`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `idEmpresa` VARCHAR(512),
+    `empresa` VARCHAR(512),
+    `idCliente` VARCHAR(512),
+    `cliente` VARCHAR(512),
+    `idSegmento` VARCHAR(512),
+    `segmento` VARCHAR(512),
+    `idAsignacion` VARCHAR(512),
+    `asignacion` VARCHAR(512),
+    `nombreEjecucion` VARCHAR(512),
+    `resultadoEjecucion` VARCHAR(512),
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2020-11-17T14:25:01.759791
+ALTER TABLE `verificacionProcesos` ADD `fechaCreacion` VARCHAR(512);
+success!
+success!
+timestamp: 2020-11-18T13:52:11.139370
+ALTER TABLE `upload` ADD `fecha_creacionDia` VARCHAR(512);
+success!
+success!
+timestamp: 2020-11-19T20:50:05.119932
+ALTER TABLE `verificacionProcesos` ADD `upload_file` VARCHAR(512);
+timestamp: 2020-11-19T20:50:05.234606
+ALTER TABLE `verificacionProcesos` ADD `upload_file` VARCHAR(512);
+timestamp: 2020-11-19T20:50:05.406272
+ALTER TABLE `verificacionProcesos` ADD `upload_file` VARCHAR(512);
+success!
+timestamp: 2020-11-19T21:19:06.023062
+ALTER TABLE `verificacionProcesos` ADD `fecha_creacionDia` VARCHAR(512);
+success!
+success!
+timestamp: 2020-11-20T02:50:29.311447
+ALTER TABLE `upload` ADD `destinoCargue` VARCHAR(512);
+success!
+success!
+timestamp: 2020-11-23T08:19:49.832542
+ALTER TABLE `verificacionProcesos` ADD `nombre_ruta_archivo` VARCHAR(512);
+success!
+success!
+timestamp: 2020-11-23T14:51:16.896311
+ALTER TABLE `verificacionProcesos` ADD `mensaje` VARCHAR(512);
+success!
+success!

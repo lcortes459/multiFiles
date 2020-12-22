@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge{{=not request.is_local and ',chrome=1' or ''}}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{=response.title or request.application}}</title>
+    <meta name="application-name" content="{{=request.application}}">
+    <link rel="stylesheet" href="{{=URL('static','css/bootstrap.min.css')}}"/>
+    <link rel="stylesheet" href="{{=URL('static','css/web2py-bootstrap4.css')}}"/>
+    <link rel="" href="{{=URL('static','images/favicon.png')}}">
+    <link href='{{=URL("static", "css/jquery.dm-uploader.min.css")}}' rel="stylesheet">
+    <script src="{{=URL('static','js/modernizr-2.8.3.min.js')}}"></script>
+    <style>
+      
+      /*html {
+        overflow-y: scroll;
+      }*/
+        #footer{
+          position:fixed;
+          bottom:0;
+          clear:both;
+          width:100%;
+          height:70px;
+          color: #000;
+          background-color:#f7f7f7;
+          z-index: 999;
+      }
+      body{
+        font-style: italic;
+        font-size: 0.9em;
+      }
+
+      .pointer {
+
+        cursor: pointer;
+      }
+      .botonPer {
+
+        height: 50px;
+        border-radius: 15px;
+        border-color: #17a2b8;
+      }
+
+    </style>
+    {{include 'web2py_ajax.html'}}
+  <title>InteliBpoFiles</title>
+  <link rel="stylesheet" href="">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">{{=response.title or request.application}}</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+</nav>
+  <input type="hidden" id="idClienSegAsi">
+  <div class="p-2" id="principal">
+
+    <div class="container-fluid" id="contenidoPrincipal">
+      <div class="card h-100" style="border-color:#000;b_order-radius:15px;">
+        <div class="card-header" style="background-color:#f7f7f7;color: #000;">
+          
+          <div style="float:left;">
+            
+            <b>Selecciona la opción de tu preferencia.</b>
+          </div>
+          <div style="float: right;">
+            
+            <button  class="btn btn-primary btn-block left"  id="btnNewAsignacion" onclick="index.vamosMejorGestion();"><b>Aquí la mejor gestión</b> 
+              <i class="fa fa-check"></i>
+            </button>
+          </div>
+        </div>
+        <br>
+        <div class="card-boby container-fluid">
+          <!-- <h6 align="center"></h6><br> -->
+          <div class="row">
+            <div class="form-group col-md-6">
+              <button class="btn btn-block botonPer" onclick="index.procesos(1,'macroProcesada','contenidoPrincipal','macroProcesada');">Macro procesada</button>
+            </div>
+            <div class="form-group col-md-6">
+              <button class="btn btn-block botonPer" onclick="index.procesos(2,'macroSinProcesar','contenidoPrincipal','contenidoClieSegAsig');">Macro sin procesar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid" id="contenidoClieSegAsigMejorGestion" style="display: none;">
+      <div class="card h-100" style="border-color:#000;b_order-radius:15px;">
+        <div class="card-header" style="background-color:#f7f7f7;color: #000;">
+          
+          <div style="float:left;">
+            
+            <b>Mejor gestión.</b>
+          </div>
+          <div style="float: right;">
+            
+            <button  class="btn btn-primary btn-block left"  id="btnNewAsignacion" onclick="index.regresarPrincipal();">
+              <i class="fa fa-chevron-left"></i> <b>Regresar</b> 
+            </button>
+          </div>
+        </div>
+        <br>
+        <div class="card-boby">
+          <div class="row">
+            <div class="col-md-12 container">
+              <form class="container-fluid" id="formPrincipal">
+                <div class="form-row">
+                  <div class="form-group col-md-4">
+                    <label for="idClientes">Seleccione un cliente</label>
+                    <select class="form-control" id="idClientes" onchange="index.clienteSegmento(this);" autofocus="">
+                      <option value="0">Seleccione un cliente</option>
+                      {{for c in clientes:}}
+                        <option value="{{=c[0]}}">{{=c[1]}}</option>
+                      {{pass}}
+                    </select>
+                  </div>
+                  <div class="form-group col-md-4">
+                    <label for="idSegmentos">Seleccione un segmento</label>
+                    <select class="form-control" disabled="" id="idSegmentos" onchange="index.segmentoAsignacion(this);">
+                      <option value="0">Seleccione un segmento</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-md-4">
+                    <label for="idAsignaciones">Seleccione una asignación</label>
+                    <select class="form-control" disabled="" id="idAsignaciones" onchange="index.asignacionFile(this);">
+                      <option value="0">Seleccione una asignación</option>
+                    </select>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="card-footer">
+          
+
+          <div class="form-group row">
+            <div class="col-md-8"></div>
+            <div class="col-md-2">
+              <button  class="btn btn-primary btn-block rigth"  onclick="index.limpiar('formPrincipal');">Limpiar
+                  <i class="fa fa-chevron-right"></i>
+              </button>
+            </div>
+            <div class="col-md-2">
+              <button  class="btn btn-primary btn-block rigth" disabled="" id="btnVamosMg" onclick="index.mejorGestionMg();">Iniciar
+                  <i class="fa fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid" id="contenidoClieSegAsig" style="display: none;">
+      <div class="card h-100" style="border-color:#000;b_order-radius:15px;">
+        <div class="card-header" style="background-color:#f7f7f7;color: #000;">
+          
+          <div style="float:left;">
+            
+            <b>Macro sin procesar.</b>
+          </div>
+          <div style="float: right;">
+          
+            <button  class="btn btn-primary btn-block left"  id="btnNewAsignacion" onclick="index.inicio();">
+              <i class="fa fa-chevron-left"></i> <b>Regresar</b> 
+            </button>
+          </div>
+        </div>
+        <br>
+        <div class="card-boby">
+          <div class="row">
+            <div class="col-md-12 container">
+              <form class="container-fluid" id="formPrincipal">
+                <div class="form-row">
+                  <div class="form-group col-md-3">
+                    <label for="exampleFormControlSelect2">Seleccione un cliente</label>
+                    <select class="form-control" id="idClientes" onchange="index.clienteSegmento(this);" autofocus="">
+                      <option value="0">Seleccione un cliente</option>
+                      {{for c in clientes:}}
+
+                        <option value="{{=c[0]}}">
+                            {{=c[1]}}
+                        </option>
+                      {{pass}}
+                    </select>
+                  </div>
+                  <div class="form-group col-md-3">
+                    <label for="exampleFormControlSelect2">Seleccione un segmento</label>
+                    <select class="form-control" disabled="" id="idSegmentos" onchange="index.segmentoAsignacion(this);">
+                      <option value="0">Seleccione un segmento</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-md-2">
+                    <label for="exampleFormControlSelect2">¿Estado asignación ?</label><br>
+                    <div class="custom-control custom-radio custom-control-inline">
+                      <input type="radio" id="radioNueva" name="radioAsiganacion" class="custom-control-input" value="1" onclick="index.nuevaAsignacion(1);">
+                      <label class="custom-control-label" for="radioNueva">Nueva</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                      <input type="radio" id="radioActua" name="radioAsiganacion" class="custom-control-input" value="0">
+                      <label class="custom-control-label" for="radioActua">Actualización</label>
+                    </div>
+                  </div>
+                  <div class="form-group col-md-4">
+                    <label for="exampleFormControlSelect2">Seleccione una asignación</label>
+                    <select class="form-control" disabled="" id="idAsignaciones" onchange="index.asignacionFile(this);">
+                      <option value="0">Seleccione una asignación</option>
+                    </select>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="card-footer">
+          
+
+          <div class="form-group row">
+            <div class="col-md-8"></div>
+            <div class="col-md-2">
+              <button  class="btn btn-primary btn-block rigth"  onclick="index.limpiar('formPrincipal');">Limpiar
+                  <i class="fa fa-chevron-right"></i>
+              </button>
+            </div>
+            <div class="col-md-2">
+              <button  class="btn btn-primary btn-block rigth" disabled="" id="btnVamos" onclick="index.vamos(1);">Siguiente
+                  <i class="fa fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid" id="macroProcesada" style="display: none;">
+      <div class="card h-100" style="border-color:#000;b_order-radius:15px;">
+        <div class="card-header" style="background-color:#f7f7f7;color: #000;">
+          
+          <div style="float:left;">
+            
+            <b>Macro procesada.</b>
+          </div>
+          <div style="float: right;">
+          
+            <button  class="btn btn-primary btn-block left"  id="btnNewAsignacion" onclick="index.inicio();">
+              <i class="fa fa-chevron-left"></i> <b>Regresar</b> 
+            </button>
+          </div>
+        </div>
+        <br>
+        <div class="card-boby">
+          <div class="row">
+            <div class="col-md-12 container">
+              <form class="container-fluid" id="formPrincipal">
+                <div class="form-row">
+                  <div class="form-group col-md-3">
+                    <label for="exampleFormControlSelect2">Seleccione un cliente</label>
+                    <select class="form-control" id="idClientes" onchange="index.clienteSegmento(this);" autofocus="">
+                      <option value="0">Seleccione un cliente</option>
+                      {{for c in clientes:}}
+
+                        <option value="{{=c[0]}}">
+                            {{=c[1]}}
+                        </option>
+                      {{pass}}
+                    </select>
+                  </div>
+                  <div class="form-group col-md-3">
+                    <label for="exampleFormControlSelect2">Seleccione un segmento</label>
+                    <select class="form-control" disabled="" id="idSegmentos" onchange="index.segmentoAsignacion(this);">
+                      <option value="0">Seleccione un segmento</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-md-2">
+                    <label for="exampleFormControlSelect2">¿Estado asignación ?</label><br>
+                    <div class="custom-control custom-radio custom-control-inline">
+                      <input type="radio" id="radioNueva" name="radioAsiganacion" class="custom-control-input" value="1" onclick="index.nuevaAsignacion(1);">
+                      <label class="custom-control-label" for="radioNueva">Nueva</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                      <input type="radio" id="radioActua" name="radioAsiganacion" class="custom-control-input" value="0">
+                      <label class="custom-control-label" for="radioActua">Actualización</label>
+                    </div>
+                  </div>
+                  <div class="form-group col-md-4">
+                    <label for="exampleFormControlSelect2">Seleccione una asignación</label>
+                    <select class="form-control" disabled="" id="idAsignaciones" onchange="index.asignacionFile(this);">
+                      <option value="0">Seleccione una asignación</option>
+                    </select>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="card-footer">
+          
+
+          <div class="form-group row">
+            <div class="col-md-8"></div>
+            <div class="col-md-2">
+              <button  class="btn btn-primary btn-block rigth"  onclick="index.limpiar('formPrincipal');">Limpiar
+                  <i class="fa fa-chevron-right"></i>
+              </button>
+            </div>
+            <div class="col-md-2">
+              <button  class="btn btn-primary btn-block rigth" disabled="" id="btnVamos" onclick="index.vamos(2);">Siguiente
+                  <i class="fa fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid" id="contenidoNewAsig" style="display: none;">
+      <div class="card h-100" style="border-color:#000;b_order-radius:15px;">
+        <div class="card-header" style="background-color:#f7f7f7;color: #000;">
+          
+          <div style="float:left;">
+            
+            <b>Nueva asignación.</b>
+          </div>
+          <div style="float: right;">
+            
+            <button  class="btn btn-primary btn-block left"  id="btnNewAsignacion"  onclick="index.regresarCliSegSigNewAsigna();">
+              <i class="fa fa-chevron-left"></i>  <b>Regresar</b> 
+            </button>
+          </div>
+        </div>
+        <br>
+        <div class="card-boby">
+          <div class="row">
+            <div class="col-md-12 container">
+              <form class="container-fluid">
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="idClientesAsignacion">Seleccione un cliente</label>
+                    <input type="hidden" class="form-control" id="idClientesAsignacion">
+                    <input type="text" class="form-control" id="idClientesAsignacionMostrar" readonly="">
+                    </select>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="idSegmentosAsignacion">Segmento</label>
+                    <input type="hidden" class="form-control" id="idSegmentosAsignacion">
+                    <input type="text" class="form-control" id="idSegmentosAsignacionMostrar" readonly="">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="nombreAsignacion">Nombre asiganción</label>
+                    <input type="text" class="form-control"  id="nombreAsignacion">
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="cierreAsignacion">Fecha cierrre</label>
+                    <input type="date" class="form-control" id="cierreAsignacion">
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="card-footer">
+          
+
+          <div class="form-group row">
+            <div class="col-md-5"></div>
+            <div class="col-md-5"></div>
+            <div class="col-md-2">
+              <button  class="btn btn-primary btn-block rigth"  id="btncrearAsignacion">Crear asignación
+                  <i class="fa fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid" id="contenidoFilesMacro" style="display: none;">
+  <div class="card h-100" style="border-color:#000;b_order-radius:15px;">
+    <div class="card-header" style="background-color:#f7f7f7;color: #000;" id="headerFilesMacro">
+      Cargue de archivos.
+    </div>
+    <br>
+    <div class="card-boby container-fluid">
+      <div class="row">
+        <div class="col-md-4 col-sm-12">
+          <div id="drag-and-drop-zoneMacro" class="dm-uploader p-5">
+
+            <div class="btn btn-primary btn-block mb-5">
+              <span>Click para subir resultado de <b>MACRO</b></span>
+              <input type="file" title='Click to add Files'/>
+              <input type="hidden" id="destino" value="Macro">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8 col-sm-12">
+          <div class="card h-100" style="border-color:#5d9269;">
+            <div class="card-header" style="background-color:#b8daff;">
+              Listado de archivos (Recuerda que las extensiones permitidas son: <b>CSV | XLSX | TXT | XLS  </b>)
+            </div>
+            <div class="card-boby">
+              <ul class="list-unstyled p-2 d-flex flex-column col" id="files">
+                <li class="text-muted text-center empty">No files uploaded.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="card-footer container-fluid">
+      <div class="form-group row">
+        <div class="col-md-2">
+          <button  class="btn btn-primary btn-block" onclick="index.regresarCliSegSig();">
+            <i class="fa fa-chevron-left"></i>  Regresar
+          </button>
+        </div>
+        <div class="col-md-8"></div>
+        <div class="col-md-2">
+          <button  class="btn btn-primary btn-block rigth" onclick="index.siguiente();">Siguiente
+            <i class="fa fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid" id="contenidoFilesVarios" style="display: none;">
+  <div class="card h-100" style="border-color:#000;b_order-radius:15px;">
+    <div class="card-header" style="background-color:#f7f7f7;color: #000;" id="headerFilesVarios">
+      Cargue de archivos.
+    </div>
+    <br>
+    <div class="card-boby container-fluid">
+      <div class="row">
+        <div class="col-md-4 col-sm-12">
+          
+          <!-- Our markup, the important part here! -->
+          <div id="drag-and-drop-zoneBi" class="dm-uploader p-5">
+            <!-- <h3 class="mb-5 mt-5 text-muted">Click en el icono para subir el archivo de la <b>MACRO</b>.</h3><br> -->
+            <div class="btn btn-primary btn-block mb-5">
+                <span>Click para subir <b>BI</b></span>
+                <input type="file" title='Click to add Files'  />
+            </div>
+          </div><!-- /uploader -->
+        </div>
+        <div class="col-md-8 col-sm-12">
+          <div class="card h-100" style="border-color:#5d9269;">
+            <div class="card-header" style="background-color:#b8daff;">
+              Listado de archivos (Recuerda que las extensiones permitidas son: <b>CSV | XLSX | TXT | XLS  </b>)
+            </div>
+            <div class="card-boby">
+              <ul class="list-unstyled p-2 d-flex flex-column col" id="files">
+                <li class="text-muted text-center empty">No files uploaded.</li>
+              </ul>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="card-footer container-fluid">
+      
+      <div class="form-group row">
+        <div class="col-md-2">
+          <button  class="btn btn-primary btn-block" onclick="index.regresarMacro();">
+            <i class="fa fa-chevron-left"></i>  Regresar
+          </button>
+        </div>
+        <div class="col-md-8"></div>
+        <div class="col-md-2">
+          <button  class="btn btn-primary btn-block rigth" onclick="index.creacionCampanas();">Finalizar
+              <i class="fa fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  </div>
+
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Más opciones</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <ul class="list-group">
+            
+            <li class="list-group-item list-group-item-primary pointer" onclick="window.location.href='index';"><b>Inicio</b></li>
+            <li class="list-group-item list-group-item-success pointer" onclick="window.location.href='misCargues';"><b>Mis cargues</b></li>
+
+          </ul>
+        </div>
+        <!-- <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div> -->
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-danger" role="alert" id="alertaFormAsignacion" style="display: none;">
+     <a href="#!" onclick="$('#contenidoFilesVarios').hide();" class="alert-link">Verificar</a>.
+  </div>
+  {{block footer}}
+    <footer class="footer container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="copyright pull-left">InteliBPO | {{=request.now.year}}</div>
+          <div id="poweredBy" class="pull-right">
+            <a href="#!" onclick="masOpciones();"  _data-toggle="modal" _data-target="#exampleModalCenter"><b>Más opciones</b></a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    {{end}}
+  <script src="{{=URL('static','js/bootstrap.bundle.min.js')}}"></script>
+  <script src="{{=URL('static','js/web2py-bootstrap4.js')}}"></script>
+  <script src="{{=URL('static','js/iconos.js')}}"></script>
+  <script src="{{=URL('static','js/sweetalert2@10.js')}}"></script>
+  <script src='{{=URL("static", "js/jquery.dm-uploader.min.js")}}'></script>
+  <script src='{{=URL("static", "js/demo-ui.js")}}'></script>
+  <script src='{{=URL("static", "js/demo-config.js")}}'></script>
+  <script src='{{=URL("static", "js/default/index.js")}}'></script>
+  
+  
+  <script type="text/html" id="files-template">
+    <li class="media">
+      <div class="media-body mb-1">
+        <p class="mb-2">
+          <strong>%%filename%%</strong> - Status: <span class="text-muted">Waiting</span>
+        </p>
+        <div class="progress mb-2">
+          <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" 
+            role="progressbar"
+            style="width: 0%" 
+            aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+          </div>
+        </div>
+        <hr class="mt-1 mb-1" />
+      </div>
+    </li>
+  </script>
+
+
+
+  
+  <script type="text/html" id="debug-template">
+    <li class="list-group-item text-%%color%%"><strong>%%date%%</strong>: %%message%%</li>
+  </script>
+
+  <script>
+    
+    function masOpciones() {
+      $("#exampleModalCenter").modal({
+        keyboard: false,
+        //backdrop: false
+      });
+    }
+
+
+  </script>
+</body>
+</html>

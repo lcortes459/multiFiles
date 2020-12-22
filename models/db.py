@@ -153,7 +153,93 @@ if configuration.get('scheduler.enabled'):
 # after defining tables, uncomment below to enable auditing
 # -------------------------------------------------------------------------
 # auth.enable_record_versioning(db)
+
+
+from datetime import  datetime, date, timedelta, time 
+
+
+def fecha(par):
+    import time
+    fecha_actual = request.now
+    fecha        = str(fecha_actual)[:16]
+    if par == 'all':
+        fecha = str(fecha_actual)[:16]
+    elif par == 'fecha':
+        fecha = str(fecha_actual)[:10]
+    elif par == 'hora':
+        fecha = time.strftime("%H:%M:%S") #Formato de 24 horas
+    else:
+        fecha = fecha
+        pass
+    return fecha
+
+
+def fechaFormato(valor,opc):
+    if opc == 'fecha':
+        anio = str(valor)[:4]
+        mes  = str(valor)[4:-2]
+        dia  = str(valor)[6:]
+        formato = anio+'-'+str(mes)+'-'+str(dia)
+    else:
+        hora = str(valor)[:2]
+        minu = str(valor)[2:]
+        formato = hora+':'+str(minu)
+        pass
+    return formato
+
+
+
+    
 db.define_table(
     "upload",
+    Field("idEmpresa"),
+    Field("empresa"),
+    Field("idCliente"),
+    Field("cliente"),
+    Field("idSegmento"),
+    Field("segmento"),
+    Field("idAsignacion"),
+    Field("asignacion"),
+    Field("nombreOriginal"),
+    Field("nombrefilescarpeta"),
+    Field("idTablaTmp"),
+    Field('fechaCreacion',default=fecha('all')),
+    Field('fecha_creacionDia',default=int(str(fecha('fecha')).replace('-',''))),
+    Field('estadoCargue'),
+    Field('destinoCargue'),
     Field("upload_file", type="upload")
+)
+
+
+db.define_table(
+    "tmpEmpClieSegAsignacion",
+    Field("idEmpresa"),
+    Field("empresa"),
+    Field("idCliente"),
+    Field("cliente"),
+    Field("idSegmento"),
+    Field("segmento"),
+    Field("idAsignacion"),
+    Field("asignacion"),
+    Field("estadoCargue"),
+)
+
+
+db.define_table(
+    "verificacionProcesos",
+    Field("idEmpresa"),
+    Field("empresa"),
+    Field("idCliente"),
+    Field("cliente"),
+    Field("idSegmento"),
+    Field("segmento"),
+    Field("idAsignacion"),
+    Field("asignacion"),
+    Field("nombreEjecucion"),
+    Field("resultadoEjecucion"),
+    Field('fechaCreacion',default=fecha('all')),
+    Field('fecha_creacionDia',default=int(str(fecha('fecha')).replace('-',''))),
+    Field("upload_file", type="upload"),
+    Field("nombre_ruta_archivo"),
+    Field("mensaje")
 )

@@ -1,114 +1,384 @@
-{{extend 'layout.html'}}
-{{block head}}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge{{=not request.is_local and ',chrome=1' or ''}}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{=response.title or request.application}}</title>
+    <meta name="application-name" content="{{=request.application}}">
+    <link rel="stylesheet" href="{{=URL('static','css/bootstrap.min.css')}}"/>
+    <link rel="stylesheet" href="{{=URL('static','css/web2py-bootstrap4.css')}}"/>
+    <link rel="" href="{{=URL('static','images/favicon.png')}}">
     <link href='{{=URL("static", "css/jquery.dm-uploader.min.css")}}' rel="stylesheet">
-{{end}}
-{{block page_js}}
-    <script src='{{=URL("static", "js/jquery.dm-uploader.min.js")}}'></script>
-    <script src='{{=URL("static", "js/demo-ui.js")}}'></script>
-    <script src='{{=URL("static", "js/demo-config.js")}}'></script>
-    
-    <!-- File item template -->
-    <script type="text/html" id="files-template">
-      <li class="media">
-        <div class="media-body mb-1">
-          <p class="mb-2">
-            <strong>%%filename%%</strong> - Status: <span class="text-muted">Waiting</span>
-          </p>
-          <div class="progress mb-2">
-            <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" 
-              role="progressbar"
-              style="width: 0%" 
-              aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+    <script src="{{=URL('static','js/modernizr-2.8.3.min.js')}}"></script>
+    <style>
+      
+      /*html {
+        overflow-y: scroll;
+      }*/
+        #footer{
+          position:fixed;
+          bottom:0;
+          clear:both;
+          width:100%;
+          height:70px;
+          color: #000;
+          background-color:#f7f7f7;
+          z-index: 999;
+      }
+      body{
+        font-style: italic;
+        font-size: 0.9em;
+      }
+
+      .pointer {
+
+        cursor: pointer;
+      }
+      .botonPer {
+
+        height: 50px;
+        border-radius: 15px;
+        border-color: #17a2b8;
+      }
+
+    </style>
+    {{include 'web2py_ajax.html'}}
+  <title>InteliBpoFiles</title>
+  <link rel="stylesheet" href="">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{{=URL('default','index')}}">Cargues Automaticos</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </nav>
+  <hr>
+  <input type="hidden" id="idClienSegAsi">
+  <div id="principalHtml" class="p-2">
+    <div class="container-fluid" id="SelClienSegAsig">
+      <div class="card h-100" style="border-color:#000;b_order-radius:15px;">
+        <div class="card-header" style="background-color:#f7f7f7;color: #000;">
+          
+          <div style="float:left;">
+            
+            <b>Selecciona las opciones de tu preferencias.</b>
+          </div>
+        </div>
+        <br>
+        <div class="card-boby">
+          <div class="row">
+            <div class="col-md-12 container">
+              <form class="container-fluid" id="formPrincipal">
+                <div class="form-row">
+                  <div class="form-group col-md-3">
+                    <label for="idClientes">Seleccione un cliente</label>
+                    <select class="form-control" id="idClientes" onchange="index.clienteSegmento(this);" >
+                      <option value="0">Seleccione un cliente</option>
+                      {{for c in clientes:}}
+
+                        <option value="{{=c[0]}}">
+                            {{=c[1]}}
+                        </option>
+                      {{pass}}
+                    </select>
+                  </div>
+                  <div class="form-group col-md-3">
+                    <label for="idSegmentos">Seleccione un segmento</label>
+                    <select class="form-control" disabled="" id="idSegmentos" onchange="index.segmentoAsignacion(this);">
+                      <option value="0">Seleccione un segmento</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-md-2">
+                    <label for="radioNueva">¿Estado asignación ?</label><br>
+                    <div class="custom-control custom-radio custom-control-inline">
+                      <input type="radio" id="radioNueva" name="radioAsiganacion" class="custom-control-input" value="1" onclick="index.nuevaAsignacion();">
+                      <label class="custom-control-label" for="radioNueva">Nueva</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                      <input type="radio" id="radioActua" name="radioAsiganacion" class="custom-control-input" value="0">
+                      <label class="custom-control-label" for="radioActua">Actualización</label>
+                    </div>
+                  </div>
+                  <div class="form-group col-md-4">
+                    <label for="idAsignaciones">Seleccione una asignación</label>
+                    <select class="form-control" disabled="" id="idAsignaciones" onchange="index.asignacionFile(this);">
+                      <option value="0">Seleccione una asignación</option>
+                    </select>
+                  </div>
+                </div>
+              </form>
             </div>
           </div>
-          <hr class="mt-1 mb-1" />
         </div>
-      </li>
-    </script>
+        <br>
+        <div class="card-footer">
+          
 
-
-
-    <!-- Debug item template -->
-    <script type="text/html" id="debug-template">
-      <li class="list-group-item text-%%color%%"><strong>%%date%%</strong>: %%message%%</li>
-    </script>
-{{end}}
-<div class="container-fluid">
-  <div class="card h-100" style="border-color:#5d9269;b_order-radius:15px;">
-    <div class="card-header" style="background-color:#b8daff;;b_order-radius:15px;">
-      Cargue de archivos.
+          <div class="form-group row">
+            <div class="col-md-8"></div>
+            <div class="col-md-2">
+              <button  class="btn btn-primary btn-block rigth"  onclick="index.limpiar('formPrincipal');">Limpiar
+                  <i class="fa fa-chevron-right"></i>
+              </button>
+            </div>
+            <div class="col-md-2">
+              <button  class="btn btn-primary btn-block rigth" disabled="" id="btnVamos" onclick="index.selecEjecucion();">Siguiente
+                  <i class="fa fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <br>
-    <div class="card-boby">
-      <div class="row">
-        <div class="col-md-12 container">
-          <form class="container-fluid">
-            <div class="form-row">
-              <div class="form-group col-md-4">
-                <label for="exampleFormControlSelect2">Seleccione un cliente</label>
-                <select class="form-control" id="idClientes">
-                  <option>Seleccione un cliente</option>
-                </select>
-              </div>
-              <div class="form-group col-md-4">
-                <label for="exampleFormControlSelect2">Seleccione un segmento</label>
-                <select class="form-control" disabled="" id="idSegmentos">
-                  <option>Seleccione un cliente</option>
-                </select>
-              </div>
-              <div class="form-group col-md-4">
-                <label for="exampleFormControlSelect2">Seleccione una asignación</label>
-                <select class="form-control" disabled="" id="idAsignaciones">
-                  <option>Seleccione un cliente</option>
-                </select>
+    <div class="container-fluid" id="contenidoNewAsig" style="display: none;">
+      <div class="card h-100" style="border-color:#000;b_order-radius:15px;">
+        <div class="card-header" style="background-color:#f7f7f7;color: #000;">
+          
+          <div style="float:left;">
+            
+            <b>Nueva asignación.</b>
+          </div>
+          <div style="float: right;">
+            
+            <button  class="btn btn-primary btn-block left"  id="btnNewAsignacion"  onclick="index.regresarCliSegSigNewAsigna();">
+              <i class="fa fa-chevron-left"></i>  <b>Regresar</b> 
+            </button>
+          </div>
+        </div>
+        <br>
+        <div class="card-boby">
+          <div class="row">
+            <div class="col-md-12 container">
+              <form class="container-fluid">
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="idClientesAsignacion">Seleccione un cliente</label>
+                    <input type="hidden" class="form-control" id="idClientesAsignacion">
+                    <input type="text" class="form-control" id="idClientesAsignacionMostrar" readonly="">
+                    </select>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="idSegmentosAsignacion">Segmento</label>
+                    <input type="hidden" class="form-control" id="idSegmentosAsignacion">
+                    <input type="text" class="form-control" id="idSegmentosAsignacionMostrar" readonly="">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="nombreAsignacion">Nombre asiganción</label>
+                    <input type="text" class="form-control"  id="nombreAsignacion">
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="cierreAsignacion">Fecha cierrre</label>
+                    <input type="date" class="form-control" id="cierreAsignacion">
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="card-footer">
+          
+
+          <div class="form-group row">
+            <div class="col-md-5"></div>
+            <div class="col-md-5"></div>
+            <div class="col-md-2">
+              <button  class="btn btn-primary btn-block rigth"  id="btncrearAsignacion">Crear asignación
+                  <i class="fa fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="container-fluid" id="contenidoFilesMacro" style="display: none;">
+      <div class="card h-100" style="border-color:#000;b_order-radius:15px;">
+        <div class="card-header" style="background-color:#f7f7f7;color: #000;" id="headerFilesMacro">
+          Cargue de archivos.
+        </div>
+        <br>
+        <div class="card-boby container-fluid">
+          <div class="row">
+            <div class="col-md-4 col-sm-12">
+              <div id="drag-and-drop-zoneMacro" class="dm-uploader p-5">
+
+                <div class="btn btn-primary btn-block mb-5">
+                  <span>Click para subir resultado de <b>MACRO</b></span>
+                  <input type="file" title='Click to add Files'/>
+                  <input type="hidden" id="destino" value="Macro">
+                </div>
               </div>
             </div>
-          </form>
+            <div class="col-md-8 col-sm-12">
+              <div class="card h-100" style="border-color:#5d9269;">
+                <div class="card-header" style="background-color:#b8daff;">
+                  Listado de archivos (Recuerda que las extensiones permitidas son: <b>CSV | XLSX | TXT | XLS  </b>)
+                </div>
+                <div class="card-boby">
+                  <ul class="list-unstyled p-2 d-flex flex-column col" id="files">
+                    <li class="text-muted text-center empty">No files uploaded.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="card-footer container-fluid">
+          <div class="form-group row">
+            <div class="col-md-2">
+              <button  class="btn btn-primary btn-block" onclick="index.regresarCliSegSig();">
+                <i class="fa fa-chevron-left"></i>  Regresar
+              </button>
+            </div>
+            <div class="col-md-8"></div>
+            <div class="col-md-2">
+              <button  class="btn btn-primary btn-block rigth" onclick="index.siguiente();">Siguiente
+                <i class="fa fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <br>
-    <div class="card-footer">
-      
+    
+    <div class="container-fluid" id="contenidoFilesVarios" style="display: none;">
+      <div class="card h-100" style="border-color:#000;b_order-radius:15px;">
+        <div class="card-header" style="background-color:#f7f7f7;color: #000;" id="headerFilesVarios">
+          Cargue de archivos.
+        </div>
+        <div class="card-boby container-fluid">
+          <div class="row">
+            <div class="col-md-4 col-sm-12">
+              <div id="drag-and-drop-zoneBi" class="dm-uploader p-5">
+                <div class="btn btn-primary btn-block mb-5">
+                  <span>Click para subir <b>BI</b></span>
+                  <input type="file" title='Click to add Files'/>
+                  <input type="hidden" id="destino" value="BI">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-8 col-sm-12">
+              <div class="card h-100" style="border-color:#5d9269;">
+                <div class="card-header" style="background-color:#b8daff;">
+                  Listado de archivos (Recuerda que las extensiones permitidas son: <b>CSV | XLSX | TXT | XLS  </b>)
+                </div>
+                <div class="card-boby">
+                  <ul class="list-unstyled p-2 d-flex flex-column col" id="files">
+                    <li class="text-muted text-center empty">No files uploaded.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer container-fluid">
+          <div class="form-group row">
+            <div class="col-md-2">
+              <button  class="btn btn-primary btn-block" onclick="index.inicio(2);">
+                <i class="fa fa-home"></i>  Inciar nuevamente
+              </button>
+            </div>
+            <div class="col-md-8"></div>
+            <div class="col-md-2">
+              <button  class="btn btn-primary btn-block rigth" onclick="index.creacionCampanas();">Finalizar
+                  <i class="fa fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-      <div class="form-group row">
-        <div class="col-md-5"></div>
-        <div class="col-md-5"></div>
-        <div class="col-md-2">
-          <button  class="btn btn-primary btn-block rigth">Siguiente
-              <i class="fa fa-chevron-right"></i>
+    <div class="container-fluid" id="contenidoFilesMacBi" style="display: none;">
+      <div class="card h-100" style="border-color:#000;b_order-radius:15px;">
+        <div class="card-header" style="background-color:#f7f7f7;color: #000;" id="headerFilesMacBi">
+          Cargue de archivos.
+        </div>
+        <div class="card-boby container-fluid">
+          <p align="justify" style="font-size:2.4em;">
+            Hola nos estamos mejorando para brindarte una mejor ejecución <i style="color:green;" class="fa fa-thumbs-up"></i>
+            Regresa pronto.
+          </p>
+        </div>
+        <div class="card-footer container-fluid">
+          <div class="form-group row">
+            <div class="col-md-2">
+              <button  class="btn btn-primary btn-block" onclick="index.regresarCliSegSig();">
+                <i class="fa fa-chevron-left"></i>  Regresar
+              </button>
+            </div>
+            <div class="col-md-8"></div>
+            <div class="col-md-2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Más opciones</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
           </button>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="container-fluid" style="display: none;">
-  <hr><br>
-  <div class="row">
-    <div class="col-md-3 col-sm-12">
-      
-      <!-- Our markup, the important part here! -->
-      <div id="drag-and-drop-zoneMacro" class="dm-uploader p-5">
-        <!-- <h3 class="mb-5 mt-5 text-muted">Click en el icono para subir el archivo de la <b>MACRO</b>.</h3><br> -->
-        <div class="btn btn-primary btn-block mb-5">
-            <span>Click aquí para subir el archivo</span>
-            <input type="file" title='Click to add Files'  />
-        </div>
-      </div><!-- /uploader -->
-    </div>
-    <div class="col-md-9 col-sm-12">
-      <div class="card h-100" style="border-color:#5d9269;border-radius:15px;">
-        <div class="card-header" style="background-color:#b8daff;;border-radius:15px;">
-          Listado de archivos
-        </div>
-        <div class="card-boby">
-          <ul class="list-unstyled p-2 d-flex flex-column col" id="files">
-            <li class="text-muted text-center empty">No files uploaded.</li>
+        <div class="modal-body">
+          <ul class="list-group">
+            
+            <li class="list-group-item list-group-item-primary pointer" onclick="window.location.href='index';"><b>Inicio</b></li>
+            <li class="list-group-item list-group-item-success pointer" onclick="window.location.href='misCargues';"><b>Mis cargues</b></li>
+
           </ul>
-          
         </div>
       </div>
     </div>
   </div>
-</div>
+  {{block footer}}
+    <footer class="footer container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="copyright pull-left">InteliBPO | {{=request.now.year}}</div>
+          <div id="poweredBy" class="pull-right">
+            <a style="color:blue;cursor:pointer;" onclick="index.masOpciones();"  _data-toggle="modal" _data-target="#exampleModalCenter"><b>Más opciones</b></a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  {{end}}
+  <script src="{{=URL('static','js/bootstrap.bundle.min.js')}}"></script>
+  <script src="{{=URL('static','js/web2py-bootstrap4.js')}}"></script>
+  <script src="{{=URL('static','js/iconos.js')}}"></script>
+  <script src="{{=URL('static','js/sweetalert2@10.js')}}"></script>
+  <script src='{{=URL("static", "js/jquery.dm-uploader.min.js")}}'></script>
+  <script src='{{=URL("static", "js/demo-ui.js")}}'></script>
+  <script src='{{=URL("static", "js/demo-config.js")}}'></script>
+  <script src='{{=URL("static", "js/default/index.js")}}'></script>
+  <script type="text/html" id="files-template">
+    <li class="media">
+      <div class="media-body mb-1">
+        <p class="mb-2">
+          <strong>%%filename%%</strong> - Status: <span class="text-muted">Waiting</span>
+        </p>
+        <div class="progress mb-2">
+          <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" 
+            role="progressbar"
+            style="width: 0%" 
+            aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+          </div>
+        </div>
+        <hr class="mt-1 mb-1" />
+      </div>
+    </li>
+  </script>
+  <script type="text/html" id="debug-template">
+    <li class="list-group-item text-%%color%%"><strong>%%date%%</strong>: %%message%%</li>
+  </script>
+</body>
+</html>

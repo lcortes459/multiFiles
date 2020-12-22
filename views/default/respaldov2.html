@@ -1,0 +1,159 @@
+<div class="container-fluid" id="contenidoFilesVarios" style="display: none;">
+      <div class="card h-100" style="border-color:#000;b_order-radius:15px;">
+        <div class="card-header" style="background-color:#f7f7f7;color: #000;" id="headerFilesVarios">
+          Cargue de archivos.
+        </div>
+        <br>
+        <div class="card-boby container-fluid">
+          <div class="row">
+            <div class="col-md-3 col-sm-12">
+              
+              <!-- Our markup, the important part here! -->
+              <div id="drag-and-drop-zoneBi" class="dm-uploader p-5">
+                <!-- <h3 class="mb-5 mt-5 text-muted">Click en el icono para subir el archivo de la <b>MACRO</b>.</h3><br> -->
+                <div class="btn btn-primary btn-block mb-5">
+                    <span><b>Click subir</b></span>
+                    <input type="file" title='Click to add Files'  />
+                </div>
+              </div><!-- /uploader -->
+            </div>
+            <div class="col-md-9 col-sm-12">
+              <div class="card h-100" style="border-color:#000;">
+                <div class="card-header" style="background-color:#f7f7f7;">
+                  Listado de archivos (Recuerda que las extensiones permitidas son: <b>CSV | XLSX | TXT | XLS  </b>)
+                </div>
+                <div class="card-boby">
+                  <ul class="list-unstyled p-2 d-flex flex-column col" id="files">
+                    <li class="text-muted text-center empty">No files uploaded.</li>
+                  </ul>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="card-footer container-fluid">
+          
+          <div class="form-group row">
+            <div class="col-md-2">
+              <button  class="btn btn-primary btn-block" onclick="index.regresarCliSegSig();">
+                <i class="fa fa-chevron-left"></i>  Regresar
+              </button>
+            </div>
+            <div class="col-md-8"></div>
+            <div class="col-md-2">
+              <button  class="btn btn-primary btn-block rigth" onclick="index.inicioPrecesos();">Iniciar
+                  <i class="fa fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid" id="contenidoFilesMacro" style="display: none;">
+      <div class="card h-100" style="border-color:#000;b_order-radius:15px;">
+        <div class="card-header" style="background-color:#f7f7f7;color: #000;" id="headerFilesMacro">
+          Cargue de archivos.
+        </div>
+        <br>
+        <div class="card-boby container-fluid">
+          <div class="row">
+            <div class="col-md-3 col-sm-12">
+              
+              <!-- Our markup, the important part here! -->
+              <div id="drag-and-drop-zoneMacro" class="dm-uploader p-5">
+                <!-- <h3 class="mb-5 mt-5 text-muted">Click en el icono para subir el archivo de la <b>MACRO</b>.</h3><br> -->
+                <div class="btn btn-primary btn-block mb-5">
+                    <span><b>Click Macro</b></span>
+                    <input type="file" title='Click to add Files'  />
+                </div>
+              </div><!-- /uploader -->
+            </div>
+            <div class="col-md-9 col-sm-12">
+              <div class="card h-100" style="border-color:#000;">
+                <div class="card-header" style="background-color:#f7f7f7;">
+                  Listado de archivos (Recuerda que las extensiones permitidas son: <b>CSV | XLSX | TXT | XLS  </b>)
+                </div>
+                <div class="card-boby">
+                  <ul class="list-unstyled p-2 d-flex flex-column col" id="files">
+                    <li class="text-muted text-center empty">No files uploaded.</li>
+                  </ul>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="card-footer container-fluid">
+          
+          <div class="form-group row">
+            <div class="col-md-2">
+              <button  class="btn btn-primary btn-block" onclick="index.regresarCliSegSig();">
+                <i class="fa fa-chevron-left"></i>  Regresar
+              </button>
+            </div>
+            <div class="col-md-8"></div>
+            <div class="col-md-2">
+              <button  class="btn btn-primary btn-block rigth" onclick="index.siguiente();">Siguiente
+                  <i class="fa fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid" id="contenidoFilesVariosMp" style="display: none;">
+      <div class="card h-100" style="border-color:#000;b_order-radius:15px;">
+        <div class="card-header" style="background-color:#f7f7f7;color: #000;" id="headerFilesVariosMp">
+          Cargue de archivos.
+        </div>
+        <br>
+        <div class="card-boby container-fluid">
+          <div class="row">
+            <div class="col-md-3 col-sm-12">
+              
+              <!-- Our markup, the important part here! -->
+              <div id="drag-and-drop-zoneMacroMp" class="dm-uploader p-5">
+                <!-- <h3 class="mb-5 mt-5 text-muted">Click en el icono para subir el archivo de la <b>MACRO</b>.</h3><br> -->
+                <div class="btn btn-primary btn-block mb-5">
+                    <span><b>Click subir</b></span>
+                    <input type="file" title='Click to add Files'  />
+                </div>
+              </div><!-- /uploader -->
+            </div>
+            <div class="col-md-9 col-sm-12">
+              <div class="card h-100" style="border-color:#000;">
+                <div class="card-header" style="background-color:#f7f7f7;">
+                  Listado de archivos (Recuerda que las extensiones permitidas son: <b>CSV | XLSX | TXT | XLS  </b>)
+                </div>
+                <div class="card-boby">
+                  <ul class="list-unstyled p-2 d-flex flex-column col" id="files">
+                    <li class="text-muted text-center empty">No files uploaded.</li>
+                  </ul>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="card-footer container-fluid">
+          
+          <div class="form-group row">
+            <div class="col-md-2">
+              <button  class="btn btn-primary btn-block" onclick="index.regresarCliSegSig();">
+                <i class="fa fa-chevron-left"></i>  Regresar
+              </button>
+            </div>
+            <div class="col-md-8"></div>
+            <div class="col-md-2">
+              <button  class="btn btn-primary btn-block rigth" onclick="index.inicioPrecesos();">Iniciar
+                  <i class="fa fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
